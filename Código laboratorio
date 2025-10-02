@@ -1,0 +1,165 @@
+#include <iostream>
+#include <limits>
+#include <utility>
+#include <string>
+#include <cmath>
+using namespace std;
+
+void ingresarDatos(double vector[12]) {
+    cout << "Ingrese las temperaturas del departamento: " << endl;
+    for (int i = 0; i < 12; i++) {
+        cout << "Para el mes " << i + 1 << ": ";
+        cin >> vector[i];
+    }
+}
+
+double promedioTemperaturas(double vector[12]) {
+    double suma = 0;
+    for (int i = 0; i < 12; i++) {
+        suma += vector[i];
+    }
+    return suma / 12;
+}
+
+double media(double Santanderpromedio, double Guajirapromedio, double Narinopromedio) {
+    return (Santanderpromedio + Guajirapromedio + Narinopromedio) / 3;
+}
+
+double pico(double v[12], int &mes) {
+    double mayor = v[0];
+    mes = 0;
+    for (int i = 1; i < 12; i++) {
+        if (v[i] > mayor) {
+            mayor = v[i];
+            mes = i;
+        }
+    }
+    return mayor;
+}
+
+double promediopico(double Santanderpico, double Guajirapico, double Narinopico) {
+    return (Santanderpico + Guajirapico + Narinopico) / 3;
+}
+
+pair<string, double> depPico(double Santanderpromedio, double Guajirapromedio, double Narinopromedio) {
+    if (Santanderpromedio >= Guajirapromedio && Santanderpromedio >= Narinopromedio) {
+        return make_pair("Santander", Santanderpromedio);
+    }
+    else if (Guajirapromedio >= Santanderpromedio && Guajirapromedio >= Narinopromedio) {
+        return make_pair("La Guajira", Guajirapromedio);
+    }
+    else {
+        return make_pair("Nariño", Narinopromedio);
+    }
+}
+
+string maxdep(double Santanderpico, double Guajirapico, double Narinopico,
+              int mesSantander, int mesGuajira, int mesNarino,
+              double &maxtemp, int &maxmes) 
+{
+    if (Santanderpico >= Guajirapico && Santanderpico >= Narinopico) {
+        maxtemp = Santanderpico;
+        maxmes = mesSantander;
+        return "Santander";
+    }
+    else if (Guajirapico >= Santanderpico && Guajirapico >= Narinopico) {
+        maxtemp = Guajirapico;
+        maxmes = mesGuajira;
+        return "La Guajira";
+    }
+    else {
+        maxtemp = Narinopico;
+        maxmes = mesNarino;
+        return "Nariño";
+    }
+}
+
+void maxTotal(double Santander[12], double Guajira[12], double Narino[12]) {
+    int mesSantander, mesGuajira, mesNarino;
+    double Santanderpico = pico(Santander, mesSantander);
+    double Guajirapico   = pico(Guajira, mesGuajira);
+    double Narinopico    = pico(Narino, mesNarino);
+
+    double maxtemp;
+    int maxmes = 0;
+
+    string departamento = maxdep(Santanderpico, Guajirapico, Narinopico,
+                                 mesSantander, mesGuajira, mesNarino,
+                                 maxtemp, maxmes);
+
+    cout << "El pico total fue en " << departamento
+         << " en el mes " << maxmes + 1
+         << " con una temperatura de: " << maxtemp << " C" << endl;
+}
+
+double desviacionEstandar(double v[12]) {
+    double suma = 0.0;
+    for (int i = 0; i < 12; i++) {
+        suma += v[i];
+    }
+    double promedio = suma / 12;
+
+    double sumaDiferencias = 0.0;
+    for (int i = 0; i < 12; i++) {
+        sumaDiferencias += pow(v[i] - promedio, 2);
+    }
+
+  
+    double desviacion = sqrt(sumaDiferencias / 12);
+    return desviacion;
+}
+
+
+int main() {
+    double Santander[12];
+    double Guajira[12];
+    double Narino[12];
+    double Santanderpromedio = 0, Guajirapromedio = 0, Narinopromedio = 0;
+    double Santanderpico = 0, Guajirapico = 0, Narinopico = 0;
+    double mediaAnual = 0;
+    int mesSantander, mesGuajira, mesNarino;
+    double picoanual = 0;
+
+    cout << "--- Santander ---" << endl;
+    ingresarDatos(Santander);
+    cout << "--- La Guajira ---" << endl;
+    ingresarDatos(Guajira);
+    cout << "--- Nariño ---" << endl;
+    ingresarDatos(Narino);
+
+    Santanderpromedio = promedioTemperaturas(Santander);
+    Guajirapromedio   = promedioTemperaturas(Guajira);
+    Narinopromedio    = promedioTemperaturas(Narino);
+
+    cout << "La temperatura promedio de Santander fue: " << Santanderpromedio << endl;
+    cout << "La temperatura promedio de La Guajira fue: " << Guajirapromedio << endl;
+    cout << "La temperatura promedio de Nariño fue: " << Narinopromedio << endl;
+
+    mediaAnual = media(Santanderpromedio, Guajirapromedio, Narinopromedio);
+    cout << "La temperatura media anual fue: " << mediaAnual << endl;
+
+    Santanderpico = pico(Santander, mesSantander);
+    Guajirapico   = pico(Guajira, mesGuajira);
+    Narinopico    = pico(Narino, mesNarino);
+
+    cout << "El pico de Santander fue: " << Santanderpico << "C en el mes: " << mesSantander + 1 << endl;
+    cout << "El pico de La Guajira fue: " << Guajirapico << "C en el mes: " << mesGuajira + 1 << endl;
+    cout << "El pico de Narino fue: " << Narinopico << "C en el mes: " << mesNarino + 1 << endl;
+
+    picoanual = promediopico(Santanderpico, Guajirapico, Narinopico);
+    cout << "El pico anual (promedio de los picos) fue: " << picoanual << " C" << endl;
+
+    auto depMayor = depPico(Santanderpromedio, Guajirapromedio, Narinopromedio);
+    cout << "El departamento con mayor promedio fue: " << depMayor.first
+         << " con: " << depMayor.second << " C" << endl;
+
+    cout << "La desviacion estandar de Santander fue: " << desviacionEstandar(Santander) << endl;
+cout << "La desviacion estandar de La Guajira fue: " << desviacionEstandar(Guajira) << endl;
+cout << "La desviacion estandar de Narino fue: " << desviacionEstandar(Narino) << endl;
+
+
+cout << "El resultado general fue:" << endl;
+    maxTotal(Santander, Guajira, Narino);
+
+    return 0;
+}
